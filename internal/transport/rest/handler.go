@@ -18,7 +18,7 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() http.Handler {
 	routes := http.NewServeMux()
-	routes.Handle("/posts", UserIdentity(http.HandlerFunc(h.Post)))
-	routes.HandleFunc("/users", h.User)
+	routes.HandleFunc("/posts/", http.HandlerFunc(h.GetAllPosts))
+	routes.HandleFunc("/users/", h.User)
 	return routes
 }

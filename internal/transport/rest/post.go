@@ -5,6 +5,16 @@ import (
 	"net/http"
 )
 
+func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
+	switch r.Method{
+	case http.MethodGet:
+		
+	default:
+		// method not allowed
+	}
+}
+
+
 func (h *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:

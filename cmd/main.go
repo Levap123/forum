@@ -4,9 +4,9 @@ import (
 	"log"
 
 	repository "forum/internal/repository/sqlite3"
+	"forum/internal/server"
 	"forum/internal/service"
 	"forum/internal/transport/rest"
-	app "forum/internal/transport/server"
 )
 
 func main() {
@@ -17,8 +17,8 @@ func main() {
 	repo := repository.NewRepository(db)
 	service := service.NewService(repo)
 	handler := rest.NewHandler(service)
-	server := new(app.Server)
-	log.Println("Listen")
+	server := new(server.Server)
+	log.Println("server is listening on: http://localhost:8080")
 	if err := server.Run("8080", handler.InitRoutes()); err != nil {
 		log.Fatal(err)
 	}
