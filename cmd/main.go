@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err) // TODO: FINISH
 	}
+
 	repo := repository.NewRepository(db)
 	service := service.NewService(repo)
 	handler := rest.NewHandler(service)
