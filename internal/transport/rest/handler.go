@@ -22,8 +22,8 @@ func (h *Handler) InitRoutes() http.Handler {
 	routes.HandleFunc("/auth/sign-in", h.SignIn)
 	routes.HandleFunc("/auth/sign-up", h.SignUp)
 	routes.HandleFunc("/posts/", http.HandlerFunc(h.GetAllPosts))
-	routes.HandleFunc("/users", h.User)
-	routes.HandleFunc("/users/", h.UserWithId)
+
+	routes.HandleFunc("/users/", h.User)
 	return routes
 }
 

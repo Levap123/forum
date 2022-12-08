@@ -16,19 +16,23 @@ type Post interface {
 }
 
 type User interface {
-	CreateUser(user entities.User) (int, error)
-	GetUser(email, password string) (entities.User, error)
 	// DeleteUser(userId int) (int, error)
 	// GetAllUsers() ([]entities.User, error)
 }
 
+type Auth interface {
+	CreateUser(user entities.User) (int, error)
+	GetUser(email, password string) (entities.User, error)
+}
 type Service struct {
 	User
 	Post
+	Auth
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		User: NewUserService(repo.User),
+		Auth: NewAuthService(repo.Auth),
 	}
 }

@@ -17,21 +17,25 @@ type Post interface {
 }
 
 type User interface {
-	CreateUser(user entities.User) (int, error)
-	GetUser(email, password string) (entities.User, error)
 	// UpdateUser(email, pasword, username string) (entities.User, error)
 	// DeleteUser(userId int) (int, error)
 	// GetAllUsers() ([]entities.User, error)
 }
 
+type Auth interface {
+	CreateUser(user entities.User) (int, error)
+	GetUser(email, password string) (entities.User, error)
+}
 type Repository struct {
 	Post
 	User
+	Auth
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		// PostRepo: Post,
 		User: NewUserRepo(db),
+		Auth: NewAuthRepo(db),
 	}
 }

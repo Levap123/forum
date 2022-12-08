@@ -20,4 +20,5 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		JSONError(w, err, http.StatusBadRequest)
 	}
+	
 }

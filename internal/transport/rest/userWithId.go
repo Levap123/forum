@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (h *Handler) UserWithId(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) User(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/users/"))
