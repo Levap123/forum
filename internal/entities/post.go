@@ -6,8 +6,3 @@ type Post struct {
 	Body  string `json:"body"`
 }
 
-type User struct {
-	Id       int    `json:"id,omitempty"`
-	Email    string `json:"email,omitempty"`
-	Username string `json:"username,omitempty"`
-}
