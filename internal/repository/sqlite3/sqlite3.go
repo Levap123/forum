@@ -11,5 +11,6 @@ func NewDb() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	createTables(db)
 	return db, err
 }

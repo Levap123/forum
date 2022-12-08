@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"forum/internal/entities"
-	"forum/pkg/errors"
 )
 
 type AuthRepo struct {
@@ -22,24 +21,24 @@ func (ur *AuthRepo) CreateUser(user entities.User) (int, error) {
 	var id int
 	tx, err := ur.db.Begin()
 	if err != nil {
-		return 0, errors.Fail(err, "CreateUser")
+		return 0, err
 	}
 
 	defer tx.Rollback()
 
-	query := fmt.Sprint("INSERT INTO %s (email, name, password) VALUES ($1, $2, $3) RETURNING id", usersTable)
+	query := fmt.Sprintf("INSERT INTO %s (email, user_name, password) VALUES ($1, $2, $3) RETURNING id", usersTable)
 	row := tx.QueryRow(query, user.Email, user.Username, user.Password)
 	if err := row.Scan(&id); err != nil {
-		return 0, errors.Fail(err, "CreateUser")
+		return 0, err
 	}
-	return id, nil
+	return id, tx.Commit()
 }
 
 func (ur *AuthRepo) GetUser(email, password string) (entities.User, error) {
 	var user entities.User
 	tx, err := ur.db.Begin()
 	if err != nil {
-		return user, errors.Fail(err, "GetUser")
+		return user, err
 	}
 
 	defer tx.Rollback()
@@ -47,7 +46,7 @@ func (ur *AuthRepo) GetUser(email, password string) (entities.User, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 and password=$2", usersTable)
 	row := tx.QueryRow(query, email, password)
 	if err := row.Scan(&user.Id, &user.Email, &user.Username); err != nil {
-		return user, errors.Fail(err, "GetUser")
+		return user, err
 	}
 	return user, nil
 }
