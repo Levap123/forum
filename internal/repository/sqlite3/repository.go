@@ -1,6 +1,10 @@
 package repository
 
-import "forum/internal/entities"
+import (
+	"database/sql"
+
+	"forum/internal/entities"
+)
 
 type Post interface {
 	CreatePost(userId int, post entities.Post) (int, error)
@@ -14,19 +18,19 @@ type Post interface {
 
 type User interface {
 	CreateUser(user entities.User) (int, error)
-	GetUser(userId int) (entities.User, error)
-	DeleteUser(userId int) (int, error)
-	GetAllUsers() ([]entities.User, error)
+	GetUser(email, password string) (entities.User, error)
+	// DeleteUser(userId int) (int, error)
+	// GetAllUsers() ([]entities.User, error)
 }
 
 type Repository struct {
-	PostRepo
-	UserRepo
+	Post
+	User
 }
 
-func NewRepository() *Repository {
+func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		PostRepo: Post,
-		UserRepo: User,
+		// PostRepo: Post,
+		User: NewUserRepo(db),
 	}
 }
