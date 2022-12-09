@@ -26,13 +26,10 @@ Start the server
 
 ## For Developers
 
-
-> It helps to you write forum with this order
-
 **Preparing**
 - [ ] Configs
 - [x] Create and Connect to DB
-- [ ] Write dockerfile
+- [ ] Dockerfile
 
 **Logic**
 - [x] sign-up
