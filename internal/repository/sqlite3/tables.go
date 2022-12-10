@@ -7,7 +7,11 @@ import (
 	"os"
 )
 
-const tableSchemas = "pkg/schemas/up.sql"
+const (
+	tableSchemas = "pkg/schemas/up.sql"
+	sessionsTable = "sessions"
+	usersTable   = "users"
+)
 
 func createTables(db *sql.DB) error {
 	f, err := os.OpenFile(tableSchemas, os.O_RDONLY, 0755)

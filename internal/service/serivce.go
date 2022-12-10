@@ -22,7 +22,7 @@ type User interface {
 
 type Auth interface {
 	CreateUser(user entities.User) (int, error)
-	GetUser(email, password string) (entities.User, error)
+	CreateSession(email, password string) (string, error)
 }
 type Service struct {
 	User

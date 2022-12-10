@@ -7,6 +7,7 @@ import (
 
 	"forum/internal/entities"
 	"forum/pkg/errors"
+	"forum/pkg/sessions"
 )
 
 type AuthRepo struct {
@@ -36,19 +37,25 @@ func (ur *AuthRepo) CreateUser(user entities.User) (int, error) {
 	return id, tx.Commit()
 }
 
-func (ur *AuthRepo) GetUser(email, password string) (entities.User, error) {
-	var user entities.User
+func (ur *AuthRepo) CreateSession(email, password string) (string, error) {
+	id := 0
 	tx, err := ur.db.Begin()
 	if err != nil {
-		return user, errors.Fail(err, "Get user")
+		return "", errors.Fail(err, "Create session")
 	}
 
 	defer tx.Rollback()
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 and password=$2", usersTable)
+	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 and password=$2", usersTable)
 	row := tx.QueryRow(query, email, password)
-	if err := row.Scan(&user.Id, &user.Email, &user.Username); err != nil {
-		return user, errors.Fail(err, "Get user")
+	if err := row.Scan(&id); err != nil {
+		return "", errors.Fail(err, "Create session")
 	}
-	return user, nil
+	uuid, err := sessions.GenerateUuid()
+	query = fmt.Sprintf("INSERT INTO %s (user_id, uuid) VALUES ($1, $2)", sessionsTable)
+	_, err = tx.Exec(query, id, uuid)
+	if err != nil {
+		return "", errors.Fail(err, "Create session")
+	}
+	return uuid, tx.Commit()
 }

@@ -20,11 +20,12 @@ type User interface {
 	// UpdateUser(email, pasword, username string) (entities.User, error)
 	// DeleteUser(userId int) (int, error)
 	// GetAllUsers() ([]entities.User, error)
+	GetUserById(id int) (entities.User, error)
 }
 
 type Auth interface {
 	CreateUser(user entities.User) (int, error)
-	GetUser(email, password string) (entities.User, error)
+	CreateSession(email, password string) (string, error)
 }
 type Repository struct {
 	Post
