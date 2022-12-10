@@ -27,9 +27,13 @@ func (as *AuthService) CreateUser(user entities.User) (int, error) {
 func (as *AuthService) CreateSession(email, password string) (string, error) {
 	uuid, err := as.repo.CreateSession(email, generatePasswordHash(password))
 	if err != nil {
-		return "", errors.Fail(err, "Get User")
+		return "", errors.Fail(err, "Create Session")
 	}
 	return uuid, nil
+}
+
+func (as *AuthService) GetIdFromSession(uuid string) (int, error) {
+	return as.repo.GetIdFromSession(uuid)
 }
 
 func generatePasswordHash(password string) string {

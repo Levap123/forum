@@ -26,6 +26,7 @@ type User interface {
 type Auth interface {
 	CreateUser(user entities.User) (int, error)
 	CreateSession(email, password string) (string, error)
+	GetIdFromSession(uuid string) (int, error)
 }
 type Repository struct {
 	Post

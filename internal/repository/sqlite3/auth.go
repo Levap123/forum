@@ -20,9 +20,9 @@ func NewAuthRepo(db *sql.DB) *AuthRepo {
 	}
 }
 
-func (ur *AuthRepo) CreateUser(user entities.User) (int, error) {
+func (ar *AuthRepo) CreateUser(user entities.User) (int, error) {
 	var id int
-	tx, err := ur.db.Begin()
+	tx, err := ar.db.Begin()
 	if err != nil {
 		return 0, errors.Fail(err, "Create user")
 	}
@@ -37,9 +37,9 @@ func (ur *AuthRepo) CreateUser(user entities.User) (int, error) {
 	return id, tx.Commit()
 }
 
-func (ur *AuthRepo) CreateSession(email, password string) (string, error) {
+func (ar *AuthRepo) CreateSession(email, password string) (string, error) {
 	id := 0
-	tx, err := ur.db.Begin()
+	tx, err := ar.db.Begin()
 	if err != nil {
 		return "", errors.Fail(err, "Create session")
 	}
@@ -58,4 +58,19 @@ func (ur *AuthRepo) CreateSession(email, password string) (string, error) {
 		return "", errors.Fail(err, "Create session")
 	}
 	return uuid, tx.Commit()
+}
+
+func (ar *AuthRepo) GetIdFromSession(uuid string) (int, error) {
+	id := 0
+	tx, err := ar.db.Begin()
+	if err != nil {
+		return id, errors.Fail(err, "Get id from session")
+	}
+	defer tx.Rollback()
+	query := fmt.Sprintf("SELECT user_id FROM %s WHERE uuid = $1", sessionsTable)
+	row := tx.QueryRow(query, uuid)
+	if err := row.Scan(&id); err != nil {
+		return 0, errors.Fail(err, "Get id from session")
+	}
+	return id, tx.Commit()
 }

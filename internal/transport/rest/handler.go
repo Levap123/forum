@@ -20,7 +20,7 @@ func (h *Handler) InitRoutes() http.Handler {
 	routes := http.NewServeMux()
 	routes.HandleFunc("/auth/sign-in", h.SignIn)
 	routes.HandleFunc("/auth/sign-up", h.SignUp)
-	routes.Handle("/posts/", UserIdentity(http.HandlerFunc(h.GetAllPosts)))
+	routes.Handle("/posts/", h.UserIdentity(http.HandlerFunc(h.GetAllPosts)))
 	routes.HandleFunc("/users/", h.User)
 	return routes
 }
