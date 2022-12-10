@@ -21,7 +21,7 @@ Go to the project directory
 Start the server
 
 ```bash
-  go run cmd/main.go
+  make build && make run
 ```
 
 ## For Developers
@@ -29,7 +29,7 @@ Start the server
 **Preparing**
 - [ ] Configs
 - [x] Create and Connect to DB
-- [ ] Dockerfile
+- [x] Dockerfile
 
 **Logic**
 - [x] sign-up
