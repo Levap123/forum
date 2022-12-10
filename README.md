@@ -29,7 +29,7 @@ Start the server
 **Preparing**
 - [ ] Configs
 - [x] Create and Connect to DB
-- [ ] Dockerfile
+- [x] Dockerfile
 
 **Logic**
 - [x] sign-up
