@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"forum/internal/entities"
 	"forum/pkg/webjson"
 	"net/http"
@@ -14,6 +15,10 @@ type signInInput struct {
 }
 
 func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		return
+	}
 	var input signInInput
 
 	err := json.NewDecoder(r.Body).Decode(&input)
@@ -38,6 +43,10 @@ type signUpInput struct {
 }
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		return
+	}
 	var input signUpInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {

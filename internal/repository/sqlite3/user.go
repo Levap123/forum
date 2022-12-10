@@ -23,7 +23,7 @@ func (ur *UserRepo) GetUserById(id int) (entities.User, error) {
 	if err != nil {
 		return user, errors.Fail(err, "Get user")
 	}
-	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", usersTable)
+	query := fmt.Sprintf("SELECT id, email, user_name FROM %s WHERE id = $1", usersTable)
 	row := tx.QueryRow(query, id)
 	if err := row.Scan(&user.Id, &user.Email, &user.Username); err != nil {
 		return user, errors.Fail(err, "Get user")

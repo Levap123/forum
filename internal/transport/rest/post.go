@@ -2,18 +2,19 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
+	"forum/pkg/webjson"
 	"net/http"
 )
 
 func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
-	switch r.Method{
+	switch r.Method {
 	case http.MethodGet:
-		
+
 	default:
-		// method not allowed
+		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
 	}
 }
-
 
 func (h *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -23,7 +24,7 @@ func (h *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		GetAllPosts(w, r)
 	default:
-		// Method not allowed
+		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
 	}
 }
 

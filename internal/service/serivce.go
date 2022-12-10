@@ -18,13 +18,13 @@ type Post interface {
 type User interface {
 	// DeleteUser(userId int) (int, error)
 	// GetAllUsers() ([]entities.User, error)
+	GetUserById(id int) (entities.User, error)
 }
 
 type Auth interface {
 	CreateUser(user entities.User) (int, error)
 	CreateSession(email, password string) (string, error)
 	GetIdFromSession(uuid string) (int, error)
-
 }
 type Service struct {
 	User
