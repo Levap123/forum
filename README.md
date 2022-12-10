@@ -21,7 +21,7 @@ Go to the project directory
 Start the server
 
 ```bash
-  go run cmd/main.go
+  make build && make run
 ```
 
 ## For Developers
