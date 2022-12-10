@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	tableSchemas = "pkg/schemas/up.sql"
+	tableSchemas  = "up.sql"
 	sessionsTable = "sessions"
-	usersTable   = "users"
+	usersTable    = "users"
 )
 
 func createTables(db *sql.DB) error {
