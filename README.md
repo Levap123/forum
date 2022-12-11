@@ -33,8 +33,9 @@ Start the server
 
 **Logic**
 - [x] sign-up
-- [ ] sign-in
-- [ ] middleware (session tracker)
+- [x] sign-in
+- [x] middleware (session tracker)
+- [x] get user by user id
 - [ ] create post
 - [ ] update post
 - [ ] get posts by user id
