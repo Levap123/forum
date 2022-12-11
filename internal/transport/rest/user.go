@@ -2,11 +2,12 @@ package rest
 
 import (
 	"fmt"
-	"forum/internal/entities"
-	"forum/pkg/webjson"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"forum/internal/entities"
+	"forum/pkg/webjson"
 )
 
 func (h *Handler) User(w http.ResponseWriter, r *http.Request) {
@@ -38,4 +39,10 @@ func (h *Handler) GetUserById(w http.ResponseWriter, r *http.Request, userId int
 }
 
 func (h *Handler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	var users []entities.User
+	users, err := h.Service.User.GetAllUsers()
+	if err != nil {
+		webjson.JSONError(w, err, http.StatusInternalServerError)
+	}
+	webjson.SendJSON(w, users)
 }

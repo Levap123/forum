@@ -17,7 +17,7 @@ type Post interface {
 
 type User interface {
 	// DeleteUser(userId int) (int, error)
-	// GetAllUsers() ([]entities.User, error)
+	GetAllUsers() ([]entities.User, error)
 	GetUserById(id int) (entities.User, error)
 }
 

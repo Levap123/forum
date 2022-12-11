@@ -3,15 +3,16 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"forum/internal/entities"
-	"forum/pkg/webjson"
 	"net/http"
 	"time"
+
+	"forum/internal/entities"
+	"forum/pkg/webjson"
 )
 
 type signInInput struct {
-	Email    string `json:"email,omitempty"`
-	Password string `json:"password,omitempty"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
@@ -37,9 +38,9 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 type signUpInput struct {
-	Email    string `json:"email,omitempty"`
-	Username string `json:"username,omitempty"`
-	Password string `json:"password,omitempty"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {

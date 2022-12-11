@@ -19,7 +19,7 @@ type Post interface {
 type User interface {
 	// UpdateUser(email, pasword, username string) (entities.User, error)
 	// DeleteUser(userId int) (int, error)
-	// GetAllUsers() ([]entities.User, error)
+	GetAllUsers() ([]entities.User, error)
 	GetUserById(id int) (entities.User, error)
 }
 

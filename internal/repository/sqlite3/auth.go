@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-
 	"fmt"
 
 	"forum/internal/entities"
@@ -74,4 +73,3 @@ func (ar *AuthRepo) GetIdFromSession(uuid string) (int, error) {
 	}
 	return id, tx.Commit()
 }
-
