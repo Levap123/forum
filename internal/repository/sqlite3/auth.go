@@ -74,3 +74,4 @@ func (ar *AuthRepo) GetIdFromSession(uuid string) (int, error) {
 	}
 	return id, tx.Commit()
 }
+
