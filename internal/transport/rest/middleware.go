@@ -2,7 +2,6 @@ package rest
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -15,7 +14,6 @@ func (h *Handler) UserIdentity(next http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
-			fmt.Println(cookie.Expires)
 			if cookie.MaxAge < 0 {
 				next.ServeHTTP(w, r)
 				return
