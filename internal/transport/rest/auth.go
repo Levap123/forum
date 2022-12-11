@@ -25,16 +25,21 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		webjson.JSONError(w, err, http.StatusBadRequest)
+		return
 	}
 	uuid, err := h.Service.CreateSession(input.Email, input.Password)
 	if err != nil {
-		webjson.JSONError(w, err, http.StatusUnauthorized)
+		webjson.JSONError(w, err, http.StatusBadRequest)
+		return
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:    "session_id",
-		Value:   uuid,
-		Expires: time.Now().Add(24 * time.Hour),
+		Name:   "session",
+		Value:  uuid,
+		Path:   "/",
+		MaxAge: int(24 * time.Hour),
 	})
+
+	webjson.SendJSON(w, map[string]any{"sessionId": uuid})
 }
 
 type signUpInput struct {
@@ -64,5 +69,20 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		webjson.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
-	webjson.SendJSON(w, map[string]int{"userId": id})
+	webjson.SendJSON(w, map[string]any{"userId": id})
+}
+
+func (h *Handler) SignOut(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		return
+	}
+	userId := r.Context().Value("id")
+	if userId == nil {
+		webjson.JSONError(w, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+	}
+	if err := h.Service.Auth.DeleteSession(userId.(int)); err != nil {
+		webjson.JSONError(w, fmt.Errorf(http.StatusText(http.StatusInternalServerError)), http.StatusInternalServerError)
+	}
+	webjson.SendJSON(w, map[string]any{"message": "deleted"})
 }

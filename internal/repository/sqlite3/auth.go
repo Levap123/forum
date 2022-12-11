@@ -73,3 +73,16 @@ func (ar *AuthRepo) GetIdFromSession(uuid string) (int, error) {
 	}
 	return id, tx.Commit()
 }
+
+func (ar *AuthRepo) DeleteSession(id int) error {
+	tx, err := ar.db.Begin()
+	if err != nil {
+		return errors.Fail(err, "Delete session")
+	}
+	defer tx.Rollback()
+	query := fmt.Sprintf("DELETE FROM %s where user_id = $1", sessionsTable)
+	if _, err := tx.Exec(query, id); err != nil {
+		return errors.Fail(err, "Delete session")
+	}
+	return tx.Commit()
+}

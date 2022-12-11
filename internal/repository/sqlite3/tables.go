@@ -12,6 +12,7 @@ const (
 	tableSchemas  = "up.sql"
 	sessionsTable = "sessions"
 	usersTable    = "users"
+	postsTable    = "posts"
 )
 
 func createTables(db *sql.DB) error {

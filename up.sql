@@ -10,3 +10,13 @@ CREATE TABLE IF NOT EXISTS sessions (
 	user_id INTEGER NOT NULL UNIQUE,
 	FOREIGN KEY(user_id) REFERENCES users(id) 
 );
+
+
+CREATE TABLE IF NOT EXISTS posts (
+	id INTEGER PRIMARY KEY,
+	title TEXT NOT NULL,
+	body TEXT NOT NULL,
+	actions INTEGER DEFAULT 0, 
+	user_id INTEGER NOT NULL,
+	FOREIGN KEY(user_id) REFERENCES users(id) 
+);
