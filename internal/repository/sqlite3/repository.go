@@ -11,9 +11,15 @@ type Post interface {
 	GetAllPosts() ([]entities.Post, error)
 	GetAllUsersPosts(userId int) ([]entities.Post, error)
 	GetPostByPostId(postId int) (entities.Post, error)
+	GetPostVotes(postId int) (int, int, error)
 	// DeletePost(userId, postId int) (int, error)
 	// UpdatePost(userId int, post entities.Post) (int, error)
-	// PostAction(userId, postId int) (int, error) // like or dislike post / remove like or dislike
+}
+
+type Action interface {
+	VotePost(userId, postId int, vote string) error
+
+	DeleteVote(userId, postId int) (int, error)
 }
 
 type User interface {
@@ -34,12 +40,14 @@ type Repository struct {
 	Post
 	User
 	Auth
+	Action
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		Post: NewPostRepo(db),
-		User: NewUserRepo(db),
-		Auth: NewAuthRepo(db),
+		Post:   NewPostRepo(db),
+		User:   NewUserRepo(db),
+		Auth:   NewAuthRepo(db),
+		Action: NewActionRepo(db),
 	}
 }

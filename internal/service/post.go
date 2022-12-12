@@ -30,3 +30,7 @@ func (ps *PostService) GetPostByPostId(postId int) (entities.Post, error) {
 func (ps *PostService) GetAllPosts() ([]entities.Post, error) {
 	return ps.repo.GetAllPosts()
 }
+
+func (ps *PostService) GetPostVotes(postId int) (int, int, error) {
+	return ps.repo.GetPostVotes(postId)
+}

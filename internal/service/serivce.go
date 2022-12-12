@@ -10,9 +10,9 @@ type Post interface {
 	GetAllPosts() ([]entities.Post, error)
 	GetAllUsersPosts(userId int) ([]entities.Post, error)
 	GetPostByPostId(postId int) (entities.Post, error)
+	GetPostVotes(postId int) (int, int, error)
 	// DeletePost(userId, postId int) (int, error)
 	// UpdatePost(userId int, post entities.Post) (int, error)
-	// PostAction(userId, postId int) (int, error) // like or dislike post / remove like or dislike
 }
 
 type User interface {
@@ -27,16 +27,22 @@ type Auth interface {
 	DeleteSession(id int) error
 	GetIdFromSession(uuid string) (int, error)
 }
+
+type Action interface {
+	VotePost(userId, postId int, vote string) error
+}
 type Service struct {
 	User
 	Post
 	Auth
+	Action
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Post: NewPostService(repo.Post),
-		User: NewUserService(repo.User),
-		Auth: NewAuthService(repo.Auth),
+		Post:   NewPostService(repo.Post),
+		User:   NewUserService(repo.User),
+		Auth:   NewAuthService(repo.Auth),
+		Action: NewActionService(repo.Action),
 	}
 }

@@ -69,7 +69,7 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	id, err := h.Service.Auth.CreateUser(user)
 	if err != nil {
 		h.Logger.Err.Println(err.Error())
-		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
+		webjson.JSONError(w, fmt.Errorf("invalid email"), http.StatusInternalServerError)
 		return
 	}
 	webjson.SendJSON(w, map[string]any{"userId": id})

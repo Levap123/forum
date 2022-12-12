@@ -11,5 +11,6 @@ func NewDb() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.Exec("PRAGMA foreign_keys = ON")
 	return db, createTables(db)
 }
