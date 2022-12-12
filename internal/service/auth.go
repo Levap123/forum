@@ -6,6 +6,7 @@ import (
 
 	"forum/internal/entities"
 	repository "forum/internal/repository/sqlite3"
+	"forum/pkg/errors"
 )
 
 const salt = "I)_#GQ@*&&*DSAFweqwAFytasgf(*DS"
@@ -19,6 +20,9 @@ func NewAuthService(auth repository.Auth) *AuthService {
 }
 
 func (as *AuthService) CreateUser(user entities.User) (int, error) {
+	if err := ValidateEmail(user.Email); err != nil {
+		return 0, errors.Fail(err, "Create user")
+	}
 	user.Password = generatePasswordHash(user.Password)
 	return as.repo.CreateUser(user)
 }
