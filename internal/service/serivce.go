@@ -10,6 +10,7 @@ type Post interface {
 	GetAllPosts() ([]entities.Post, error)
 	GetAllUsersPosts(userId int) ([]entities.Post, error)
 	GetPostByPostId(postId int) (entities.Post, error)
+	GetPostVotes(postId int) (int, int, error)
 	// DeletePost(userId, postId int) (int, error)
 	// UpdatePost(userId int, post entities.Post) (int, error)
 }
@@ -29,7 +30,6 @@ type Auth interface {
 
 type Action interface {
 	VotePost(userId, postId int, vote string) error
-	GetPostVotes(postId int) (int, int, error)
 }
 type Service struct {
 	User

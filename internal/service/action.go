@@ -40,7 +40,3 @@ func (as *ActionService) VotePost(userId, postId int, vote string) error {
 
 	return nil
 }
-
-func (as *ActionService) GetPostVotes(postId int) (int, int, error) {
-	return as.repo.GetPostVotes(postId)
-}

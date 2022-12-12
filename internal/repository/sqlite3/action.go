@@ -15,30 +15,6 @@ func NewActionRepo(db *sql.DB) *ActionRepo {
 	return &ActionRepo{db: db}
 }
 
-func (ar *ActionRepo) GetPostVotes(postId int) (int, int, error) {
-	tx, err := ar.db.Begin()
-	likes := 0
-	dislikes := 0
-	if err != nil {
-		return 0, 0, errors.Fail(err, "Get Post Likes")
-	}
-	defer tx.Rollback()
-	query := fmt.Sprintf("SELECT vote FROM %s WHERE post_id = $1", actionsTable)
-	rows, err := tx.Query(query, postId)
-	for rows.Next() {
-		var buffer int
-		if err := rows.Scan(&buffer); err != nil {
-			return 0, 0, errors.Fail(err, "Get post votes")
-		}
-		if buffer == 1 {
-			likes++
-		} else {
-			dislikes++
-		}
-	}
-	return likes, dislikes, nil
-}
-
 func (ar *ActionRepo) VotePost(userId, postId int, vote string) error {
 	tx, err := ar.db.Begin()
 	if err != nil {

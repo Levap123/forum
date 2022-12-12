@@ -18,6 +18,30 @@ func NewPostRepo(db *sql.DB) *PostRepo {
 	}
 }
 
+func (pr *PostRepo) GetPostVotes(postId int) (int, int, error) {
+	tx, err := pr.db.Begin()
+	likes := 0
+	dislikes := 0
+	if err != nil {
+		return 0, 0, errors.Fail(err, "Get Post Likes")
+	}
+	defer tx.Rollback()
+	query := fmt.Sprintf("SELECT vote FROM %s WHERE post_id = $1", actionsTable)
+	rows, err := tx.Query(query, postId)
+	for rows.Next() {
+		var buffer int
+		if err := rows.Scan(&buffer); err != nil {
+			return 0, 0, errors.Fail(err, "Get post votes")
+		}
+		if buffer == 1 {
+			likes++
+		} else {
+			dislikes++
+		}
+	}
+	return likes, dislikes, nil
+}
+
 func (pr *PostRepo) CreatePost(userId int, title, body string) (int, error) {
 	var postId int
 	tx, err := pr.db.Begin()
@@ -40,7 +64,7 @@ func (pr *PostRepo) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 		return nil, errors.Fail(err, "Get all users posts")
 	}
 	defer tx.Rollback()
-	query := fmt.Sprintf("SELECT id, title, body, actions  FROM %s WHERE user_id = $1", postsTable)
+	query := fmt.Sprintf("SELECT id, title, body FROM %s WHERE user_id = $1", postsTable)
 	rows, err := tx.Query(query, userId)
 	if err != nil {
 		return nil, errors.Fail(err, "Get all users posts")
@@ -48,6 +72,10 @@ func (pr *PostRepo) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 	for rows.Next() {
 		var buffer entities.Post
 		if err := rows.Scan(&buffer.Id, &buffer.Title, &buffer.Body); err != nil {
+			return nil, errors.Fail(err, "Get all users posts")
+		}
+		buffer.Likes, buffer.Dislikes, err = pr.GetPostVotes(buffer.Id)
+		if err != nil {
 			return nil, errors.Fail(err, "Get all users posts")
 		}
 		posts = append(posts, buffer)
@@ -67,6 +95,7 @@ func (pr *PostRepo) GetPostByPostId(postId int) (entities.Post, error) {
 	if err := row.Scan(&post.Id, &post.Title, &post.Body, &post.UserId); err != nil {
 		return entities.Post{}, err
 	}
+	post.Likes, post.Dislikes, err = pr.GetPostVotes(post.Id)
 	return post, err
 }
 
@@ -86,6 +115,7 @@ func (pr *PostRepo) GetAllPosts() ([]entities.Post, error) {
 		if err := rows.Scan(&buffer.Id, &buffer.Title, &buffer.Body, &buffer.UserId); err != nil {
 			return nil, errors.Fail(err, "Get all users posts")
 		}
+		buffer.Likes, buffer.Dislikes, err = pr.GetPostVotes(buffer.Id)
 		posts = append(posts, buffer)
 	}
 	return posts, tx.Commit()

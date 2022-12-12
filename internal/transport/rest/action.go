@@ -29,7 +29,7 @@ func (h *Handler) Vote(w http.ResponseWriter, r *http.Request) {
 		webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	likes, dislikes, err := h.Service.Action.GetPostVotes(input.PostId)
+	likes, dislikes, err := h.Service.Post.GetPostVotes(input.PostId)
 	if err != nil {
 		h.Logger.Err.Println(err)
 		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
