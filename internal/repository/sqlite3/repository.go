@@ -18,6 +18,7 @@ type Post interface {
 type Action interface {
 	VotePost(userId, postId int, vote string) error
 	GetPostVotes(postId int) (int, int, error)
+	DeleteVote(userId, postId int) (int, error)
 }
 
 type User interface {

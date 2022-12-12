@@ -15,8 +15,6 @@ func NewActionRepo(db *sql.DB) *ActionRepo {
 	return &ActionRepo{db: db}
 }
 
-const uniqueError = "UNIQUE constraint failed"
-
 func (ar *ActionRepo) GetPostVotes(postId int) (int, int, error) {
 	tx, err := ar.db.Begin()
 	likes := 0
@@ -48,7 +46,6 @@ func (ar *ActionRepo) VotePost(userId, postId int, vote string) error {
 	}
 	defer tx.Rollback()
 	action := 0
-	fmt.Println(vote)
 	if vote == "like" {
 		action = 1
 	}
@@ -64,4 +61,19 @@ func (ar *ActionRepo) VotePost(userId, postId int, vote string) error {
 		return err
 	}
 	return tx.Commit()
+}
+
+func (ar *ActionRepo) DeleteVote(userId, postId int) (int, error) {
+	var vote int
+	tx, err := ar.db.Begin()
+	if err != nil {
+		return 0, errors.Fail(err, "Delete vote")
+	}
+	defer tx.Rollback()
+	query := fmt.Sprintf("DELETE FROM %s WHERE user_id = $1 and post_id = $2 RETURNING vote", actionsTable)
+	row := tx.QueryRow(query, userId, postId)
+	if err := row.Scan(&vote); err != nil {
+		return 0, errors.Fail(err, "Delete vote")
+	}
+	return vote, tx.Commit()
 }
