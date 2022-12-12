@@ -36,9 +36,9 @@ Start the server
 - [x] sign-in
 - [x] middleware (session tracker)
 - [x] get user by user id
-- [ ] create post
+- [x] create post
 - [ ] update post
-- [ ] get posts by user id
+- [x] get posts by user id
 - [ ] like or dislike psot
 - [ ] create comment 
 - [ ] delete comment
