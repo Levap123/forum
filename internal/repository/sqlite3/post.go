@@ -54,3 +54,18 @@ func (pr *PostRepo) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 	}
 	return posts, nil
 }
+
+func (pr *PostRepo) GetPostByPostId(postId int) (entities.Post, error) {
+	var post entities.Post
+	tx, err := pr.db.Begin()
+	if err != nil {
+		return entities.Post{}, errors.Fail(err, "Get post by post id")
+	}
+	defer tx.Rollback()
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", postsTable)
+	row := tx.QueryRow(query, postId)
+	if err := row.Scan(&post.Id, &post.Title, &post.Body, &post.Actions, &post.UserId); err != nil {
+		return entities.Post{}, err
+	}
+	return post, err
+}

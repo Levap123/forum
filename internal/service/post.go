@@ -22,3 +22,7 @@ func (ps *PostService) CreatePost(userId int, body, title string) (int, error) {
 func (ps *PostService) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 	return ps.repo.GetAllUsersPosts(userId)
 }
+
+func (ps *PostService) GetPostByPostId(postId int) (entities.Post, error) {
+	return ps.repo.GetPostByPostId(postId)
+}

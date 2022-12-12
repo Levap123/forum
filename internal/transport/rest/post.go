@@ -24,7 +24,7 @@ func (h *Handler) GetPosts(w http.ResponseWriter, r *http.Request) {
 			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-		h.GetPostsByPostId(w, r, userId)
+		h.GetPostByPostId(w, r, userId)
 	default:
 		webjson.JSONError(w, errors.WebFail(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
@@ -82,15 +82,30 @@ func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetPostsByUserId(w http.ResponseWriter, r *http.Request, id int) {
 	var posts []entities.Post
-
 	posts, err := h.Service.Post.GetAllUsersPosts(id)
 	if err != nil {
 		h.Logger.Err.Println(err.Error())
 		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+	if posts == nil {
+		webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 	webjson.SendJSON(w, posts)
 }
 
-func (h *Handler) GetPostsByPostId(w http.ResponseWriter, r *http.Request, id int) {
+func (h *Handler) GetPostByPostId(w http.ResponseWriter, r *http.Request, id int) {
+	var post entities.Post
+	post, err := h.Service.Post.GetPostByPostId(id)
+	if post.Id == 0 {
+		webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	webjson.SendJSON(w, post)
 }
