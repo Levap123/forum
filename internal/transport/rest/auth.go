@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"forum/internal/entities"
+	"forum/pkg/errors"
 	"forum/pkg/webjson"
 )
 
@@ -17,7 +18,7 @@ type signInInput struct {
 
 func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		webjson.JSONError(w, errors.WebFail(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
 	var input signInInput
@@ -29,7 +30,8 @@ func (h *Handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 	uuid, err := h.Service.CreateSession(input.Email, input.Password)
 	if err != nil {
-		webjson.JSONError(w, err, http.StatusBadRequest)
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, fmt.Errorf("Invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
@@ -50,7 +52,7 @@ type signUpInput struct {
 
 func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusMethodNotAllowed)
 		return
 	}
 	var input signUpInput
@@ -66,7 +68,8 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 	id, err := h.Service.Auth.CreateUser(user)
 	if err != nil {
-		webjson.JSONError(w, err, http.StatusInternalServerError)
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 	webjson.SendJSON(w, map[string]any{"userId": id})
@@ -74,15 +77,16 @@ func (h *Handler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) SignOut(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		webjson.JSONError(w, fmt.Errorf("Method not allowed"), http.StatusMethodNotAllowed)
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusMethodNotAllowed)
 		return
 	}
 	userId := r.Context().Value("id")
 	if userId == nil {
-		webjson.JSONError(w, fmt.Errorf(http.StatusText(http.StatusUnauthorized)), http.StatusUnauthorized)
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusUnauthorized)
 	}
 	if err := h.Service.Auth.DeleteSession(userId.(int)); err != nil {
-		webjson.JSONError(w, fmt.Errorf(http.StatusText(http.StatusInternalServerError)), http.StatusInternalServerError)
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 	webjson.SendJSON(w, map[string]any{"message": "deleted"})
 }
