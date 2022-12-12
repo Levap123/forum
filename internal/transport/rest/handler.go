@@ -4,15 +4,18 @@ import (
 	"net/http"
 
 	"forum/internal/service"
+	"forum/pkg/logger"
 )
 
 type Handler struct {
 	Service *service.Service
+	Logger  *logger.Logger
 }
 
-func NewHandler(service *service.Service) *Handler {
+func NewHandler(service *service.Service, logger *logger.Logger) *Handler {
 	return &Handler{
 		Service: service,
+		Logger:  logger,
 	}
 }
 

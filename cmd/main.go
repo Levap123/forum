@@ -7,19 +7,25 @@ import (
 	"forum/internal/server"
 	"forum/internal/service"
 	"forum/internal/transport/rest"
+	"forum/pkg/logger"
 )
+
+const port = "8080"
 
 func main() {
 	db, err := repository.NewDb()
+	logger := logger.NewLogger()
 	if err != nil {
-		log.Fatal(err) // TODO: FINISH
+		logger.Err.Println("Unable to connect database")
+		return
 	}
 
 	repo := repository.NewRepository(db)
 	service := service.NewService(repo)
-	handler := rest.NewHandler(service)
+	handler := rest.NewHandler(service, logger)
 	server := new(server.Server)
-	log.Println("server is listening on: http://localhost:8080")
+	logger.Info.Printf("server is listening on: http://localhost:%s\n", port)
+	log.Printf("server is listening on: http://localhost:%s\n", port)
 	if err := server.Run("8080", handler.InitRoutes()); err != nil {
 		log.Fatal(err)
 	}
