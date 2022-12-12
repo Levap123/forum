@@ -60,5 +60,8 @@ func (ar *ActionRepo) VotePost(userId, postId int, vote string) error {
 	}
 	query := fmt.Sprintf("INSERT INTO %s (vote, user_id, post_id) VALUES ($1, $2, $3)", actionsTable)
 
+	if _, err := tx.Exec(query, action, userId, postId); err != nil {
+		return err
+	}
 	return tx.Commit()
 }
