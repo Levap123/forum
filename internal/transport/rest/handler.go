@@ -30,6 +30,6 @@ func (h *Handler) InitRoutes() http.Handler {
 	routes.HandleFunc("/posts/", h.GetPosts)
 	routes.Handle("/users/posts/", h.UserIdentity(http.HandlerFunc(h.Posts)))
 
-	routes.Handle("/posts/action", h.UserIdentity())
+	routes.Handle("/posts/action", h.UserIdentity(http.HandlerFunc(h.Vote)))
 	return routes
 }

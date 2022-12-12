@@ -15,6 +15,8 @@ func NewActionRepo(db *sql.DB) *ActionRepo {
 	return &ActionRepo{db: db}
 }
 
+const uniqueError = "UNIQUE constraint failed"
+
 func (ar *ActionRepo) GetPostVotes(postId int) (int, int, error) {
 	tx, err := ar.db.Begin()
 	likes := 0
@@ -39,13 +41,14 @@ func (ar *ActionRepo) GetPostVotes(postId int) (int, int, error) {
 	return likes, dislikes, nil
 }
 
-func (ar *ActionRepo) VotePost(userId, postId int, vote string) (int, error) {
+func (ar *ActionRepo) VotePost(userId, postId int, vote string) error {
 	tx, err := ar.db.Begin()
 	if err != nil {
-		return 0, errors.Fail(err, "Get Post Likes")
+		return errors.Fail(err, "Get Post Likes")
 	}
 	defer tx.Rollback()
 	action := 0
+	fmt.Println(vote)
 	if vote == "like" {
 		action = 1
 	}
@@ -53,7 +56,9 @@ func (ar *ActionRepo) VotePost(userId, postId int, vote string) (int, error) {
 		action = -1
 	}
 	if action == 0 {
-		return 0, errors.Fail(fmt.Errorf("vote type is not like or dislike"), "Vote post")
+		return errors.Fail(fmt.Errorf("vote type is not like or dislike"), "Vote post")
 	}
-	query := fmt.Sprintf("INSERT INTO %s ")
+	query := fmt.Sprintf("INSERT INTO %s (vote, user_id, post_id) VALUES ($1, $2, $3)", actionsTable)
+
+	return tx.Commit()
 }
