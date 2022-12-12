@@ -78,6 +78,19 @@ func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
+	var posts []entities.Post
+	posts, err := h.Service.Post.GetAllPosts()
+	if posts == nil {
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	webjson.SendJSON(w, posts)
 }
 
 func (h *Handler) GetPostsByUserId(w http.ResponseWriter, r *http.Request, id int) {

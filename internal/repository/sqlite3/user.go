@@ -37,17 +37,17 @@ func (ur *UserRepo) GetAllUsers() ([]entities.User, error) {
 	users := make([]entities.User, 0)
 	tx, err := ur.db.Begin()
 	if err != nil {
-		return []entities.User{}, errors.Fail(err, "Get all users")
+		return nil, errors.Fail(err, "Get all users")
 	}
 	defer tx.Rollback()
 	query := fmt.Sprintf("SELECT id, email, user_name from %s", usersTable)
 	row, err := tx.Query(query)
 	for row.Next() {
-		var userBuffer entities.User
-		if err := row.Scan(&userBuffer.Id, &userBuffer.Email, &userBuffer.Username); err != nil {
-			return []entities.User{}, errors.Fail(err, "Get all users")
+		var buffer entities.User
+		if err := row.Scan(&buffer.Id, &buffer.Email, &buffer.Username); err != nil {
+			return nil, errors.Fail(err, "Get all users")
 		}
-		users = append(users, userBuffer)
+		users = append(users, buffer)
 	}
 	return users, nil
 }

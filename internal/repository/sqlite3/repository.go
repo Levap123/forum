@@ -8,7 +8,7 @@ import (
 
 type Post interface {
 	CreatePost(userId int, body, title string) (int, error)
-	// GetAllPosts() ([]entities.Post, error)
+	GetAllPosts() ([]entities.Post, error)
 	GetAllUsersPosts(userId int) ([]entities.Post, error)
 	GetPostByPostId(postId int) (entities.Post, error)
 	// DeletePost(userId, postId int) (int, error)

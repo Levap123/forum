@@ -46,13 +46,13 @@ func (pr *PostRepo) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 		return nil, errors.Fail(err, "Get all users posts")
 	}
 	for rows.Next() {
-		var postBuffer entities.Post
-		if err := rows.Scan(&postBuffer.Id, &postBuffer.Title, &postBuffer.Body, &postBuffer.Actions); err != nil {
+		var buffer entities.Post
+		if err := rows.Scan(&buffer.Id, &buffer.Title, &buffer.Body, &buffer.Actions); err != nil {
 			return nil, errors.Fail(err, "Get all users posts")
 		}
-		posts = append(posts, postBuffer)
+		posts = append(posts, buffer)
 	}
-	return posts, nil
+	return posts, tx.Commit()
 }
 
 func (pr *PostRepo) GetPostByPostId(postId int) (entities.Post, error) {
@@ -68,4 +68,25 @@ func (pr *PostRepo) GetPostByPostId(postId int) (entities.Post, error) {
 		return entities.Post{}, err
 	}
 	return post, err
+}
+
+func (pr *PostRepo) GetAllPosts() ([]entities.Post, error) {
+	var posts []entities.Post
+	tx, err := pr.db.Begin()
+	if err != nil {
+		return nil, errors.Fail(err, "Get all posts")
+	}
+	query := fmt.Sprintf("SELECT * FROM %s", postsTable)
+	rows, err := tx.Query(query)
+	if err != nil {
+		return nil, errors.Fail(err, "Get all users posts")
+	}
+	for rows.Next() {
+		var buffer entities.Post
+		if err := rows.Scan(&buffer.Id, &buffer.Title, &buffer.Body, &buffer.Actions, &buffer.UserId); err != nil {
+			return nil, errors.Fail(err, "Get all users posts")
+		}
+		posts = append(posts, buffer)
+	}
+	return posts, tx.Commit()
 }

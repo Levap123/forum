@@ -26,3 +26,7 @@ func (ps *PostService) GetAllUsersPosts(userId int) ([]entities.Post, error) {
 func (ps *PostService) GetPostByPostId(postId int) (entities.Post, error) {
 	return ps.repo.GetPostByPostId(postId)
 }
+
+func (ps *PostService) GetAllPosts() ([]entities.Post, error) {
+	return ps.repo.GetAllPosts()
+}
