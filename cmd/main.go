@@ -16,7 +16,7 @@ func main() {
 	db, err := repository.NewDb()
 	logger := logger.NewLogger()
 	if err != nil {
-		logger.Err.Println("Unable to connect database")
+		logger.Err.Println(err.Error())
 		return
 	}
 

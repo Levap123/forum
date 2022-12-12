@@ -13,6 +13,7 @@ const (
 	sessionsTable = "sessions"
 	usersTable    = "users"
 	postsTable    = "posts"
+	actionsTable  = "actions"
 )
 
 func createTables(db *sql.DB) error {
