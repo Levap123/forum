@@ -16,7 +16,16 @@ CREATE TABLE IF NOT EXISTS posts (
 	id INTEGER PRIMARY KEY,
 	title TEXT NOT NULL UNIQUE,
 	body TEXT NOT NULL,
-	actions INTEGER DEFAULT 0, 
 	user_id INTEGER NOT NULL,
 	FOREIGN KEY(user_id) REFERENCES users(id) 
+);
+
+CREATE TABLE IF NOT EXISTS action (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    vote INTEGER NOT NULL CHECK(vote IN(-1, 1)),
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    UNIQUE (user_id, post_id),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(post_id) REFERENCES posts(id),
 );
