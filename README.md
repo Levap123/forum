@@ -39,7 +39,7 @@ Start the server
 - [x] create post
 - [ ] update post
 - [x] get posts by user id
-- [ ] like or dislike psot
+- [x] like or dislike psot
 - [ ] create comment 
 - [ ] delete comment
 - [ ] like or dislike comment
