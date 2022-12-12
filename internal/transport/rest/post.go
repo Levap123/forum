@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"forum/pkg/errors"
@@ -12,7 +13,17 @@ import (
 func (h *Handler) GetPosts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-
+		userIdStr := strings.TrimPrefix(r.URL.Path, "/posts/")
+		if userIdStr == "" {
+			h.GetAllPosts(w, r)
+			return
+		}
+		userId, err := strconv.Atoi(userIdStr)
+		if err != nil {
+			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		h.GetPostsByPostId(w, r, userId)
 	default:
 		webjson.JSONError(w, errors.WebFail(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}
@@ -21,11 +32,17 @@ func (h *Handler) GetPosts(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		userId := strings.TrimPrefix(r.URL.Path, "/posts/")
-		if userId == "" {
-			h.GetAllPosts(w, r)
+		postIdStr := strings.TrimPrefix(r.URL.Path, "/posts/")
+		if postIdStr == "" {
+			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
+		postId, err := strconv.Atoi(postIdStr)
+		if err != nil {
+			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		h.GetPostsByPostId(w, r, postId)
 	case http.MethodPost:
 		h.CreatePost(w, r)
 	default:
@@ -42,6 +59,7 @@ func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 	var input PostInput
 	userId := r.Context().Value("id")
 	if userId == nil {
+		h.Logger.Err.Println("uuid is not correct")
 		webjson.JSONError(w, errors.WebFail(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
@@ -61,5 +79,8 @@ func (h *Handler) CreatePost(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
 }
 
-func (h *Handler) GetPostByUserID(w http.ResponseWriter, r *http.Request, id int) {
+func (h *Handler) GetPostsByUserId(w http.ResponseWriter, r *http.Request, id int) {
+}
+
+func (h *Handler) GetPostsByPostId(w http.ResponseWriter, r *http.Request, id int) {
 }

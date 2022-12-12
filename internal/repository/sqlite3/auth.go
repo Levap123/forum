@@ -54,7 +54,12 @@ func (ar *AuthRepo) CreateSession(email, password string) (string, error) {
 	query = fmt.Sprintf("INSERT INTO %s (user_id, uuid) VALUES ($1, $2)", sessionsTable)
 	_, err = tx.Exec(query, id, uuid)
 	if err != nil {
-		return "", errors.Fail(err, "Create session")
+		fmt.Println(id)
+		query = fmt.Sprintf("UPDATE %s SET uuid = $1 WHERE user_id = $2", sessionsTable)
+		_, err = tx.Exec(query, uuid, id)
+		if err != nil {
+			return "", errors.Fail(err, "Create session")
+		}
 	}
 	return uuid, tx.Commit()
 }

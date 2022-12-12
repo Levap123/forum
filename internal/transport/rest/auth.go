@@ -82,7 +82,8 @@ func (h *Handler) SignOut(w http.ResponseWriter, r *http.Request) {
 	}
 	userId := r.Context().Value("id")
 	if userId == nil {
-		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusUnauthorized)
+		webjson.JSONError(w, errors.WebFail(http.StatusUnauthorized), http.StatusUnauthorized)
+		return
 	}
 	if err := h.Service.Auth.DeleteSession(userId.(int)); err != nil {
 		h.Logger.Err.Println(err.Error())
