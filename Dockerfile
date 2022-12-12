@@ -15,6 +15,7 @@ WORKDIR /app
 
 COPY --from=build /app/main .
 COPY --from=build /app/up.sql .
+COPY --from=build /app/forum.db .
 
 EXPOSE 8080
 
