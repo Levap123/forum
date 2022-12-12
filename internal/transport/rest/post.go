@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"forum/internal/entities"
 	"forum/pkg/errors"
 	"forum/pkg/webjson"
 )
@@ -32,17 +33,17 @@ func (h *Handler) GetPosts(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Posts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		postIdStr := strings.TrimPrefix(r.URL.Path, "/posts/")
+		postIdStr := strings.TrimPrefix(r.URL.Path, "/users/posts/")
 		if postIdStr == "" {
-			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
+			webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusNotFound)
 			return
 		}
 		postId, err := strconv.Atoi(postIdStr)
 		if err != nil {
-			webjson.JSONError(w, errors.WebFail(http.StatusBadRequest), http.StatusBadRequest)
+			webjson.JSONError(w, errors.WebFail(http.StatusNotFound), http.StatusNotFound)
 			return
 		}
-		h.GetPostsByPostId(w, r, postId)
+		h.GetPostsByUserId(w, r, postId)
 	case http.MethodPost:
 		h.CreatePost(w, r)
 	default:
@@ -80,6 +81,15 @@ func (h *Handler) GetAllPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetPostsByUserId(w http.ResponseWriter, r *http.Request, id int) {
+	var posts []entities.Post
+
+	posts, err := h.Service.Post.GetAllUsersPosts(id)
+	if err != nil {
+		h.Logger.Err.Println(err.Error())
+		webjson.JSONError(w, errors.WebFail(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+	webjson.SendJSON(w, posts)
 }
 
 func (h *Handler) GetPostsByPostId(w http.ResponseWriter, r *http.Request, id int) {
